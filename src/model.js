@@ -12,6 +12,10 @@ export const MED_COLORS = [
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
+export function makeId() {
+  return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
+}
+
 export function toDateKey(date) {
   const y = date.getFullYear()
   const m = String(date.getMonth() + 1).padStart(2, '0')
@@ -26,6 +30,12 @@ export function todayKey() {
 export function parseDateKey(key) {
   const [y, m, d] = key.split('-').map(Number)
   return new Date(y, m - 1, d)
+}
+
+export function isValidDateKey(key) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) return false
+  const d = parseDateKey(key)
+  return !Number.isNaN(d.getTime()) && toDateKey(d) === key
 }
 
 /** Whole days from today until the given date key (negative if past). */
@@ -57,12 +67,6 @@ export function daysOfSupply(med) {
   const perDay = pillsPerDay(med)
   if (perDay <= 0) return Infinity
   return Math.floor(med.pillsRemaining / perDay)
-}
-
-export function runOutDateKey(med) {
-  const days = daysOfSupply(med)
-  if (!Number.isFinite(days)) return null
-  return addDays(todayKey(), days)
 }
 
 /**
@@ -158,7 +162,7 @@ export function weeklyAdherence(meds, log) {
 
 export function makeMed(overrides = {}) {
   return {
-    id: crypto.randomUUID(),
+    id: makeId(),
     name: '',
     dosage: '',
     slots: ['morning'],

@@ -1,6 +1,6 @@
 # PillPal 💊
 
-A small web app that helps you keep up with your subscription pills — vitamins, supplements, and medications you get delivered on a schedule.
+A mobile app (React Native + Expo) that helps you keep up with your subscription pills — vitamins, supplements, and medications you get delivered on a schedule.
 
 ## What it does
 
@@ -10,7 +10,7 @@ A small web app that helps you keep up with your subscription pills — vitamins
 - **One-tap refills** — when a delivery shows up, hit "Refill arrived" to top up your supply and schedule the next refill.
 - **Streaks and adherence** — a daily streak counter and your dose adherence over the last 7 days.
 
-All data is stored locally in your browser (localStorage). No accounts, no servers.
+All data is stored on-device with AsyncStorage. No accounts, no servers.
 
 > PillPal is a tracking aid, not medical advice.
 
@@ -18,20 +18,32 @@ All data is stored locally in your browser (localStorage). No accounts, no serve
 
 ```bash
 npm install
-npm run dev
+npm start
 ```
 
-Then open http://localhost:5173.
+Then:
 
-To build for production:
-
-```bash
-npm run build
-npm run preview
-```
+- Scan the QR code with the [Expo Go](https://expo.dev/go) app on your phone (iOS or Android), or
+- Press `a` to open an Android emulator, `i` for the iOS simulator, or
+- Press `w` to preview in a web browser.
 
 ## Tech
 
-- [React 18](https://react.dev/) + [Vite](https://vite.dev/)
-- Plain CSS, no UI framework
-- localStorage persistence
+- [Expo](https://expo.dev/) SDK 57 / [React Native](https://reactnative.dev/) 0.86
+- React 19, plain `StyleSheet` styling (no UI framework)
+- `@react-native-async-storage/async-storage` for on-device persistence
+
+## Project layout
+
+```
+App.js                     # Root component: state, actions, screen layout
+src/model.js               # Domain logic: schedules, supply math, streaks, refill status
+src/storage.js             # AsyncStorage persistence
+src/theme.js               # Colors, radii, shadows
+src/components/
+  AlertsBanner.js          # Refill / low-supply alert banners
+  StatsRow.js              # Doses today, streak, 7-day adherence
+  TodaySection.js          # Tap-to-take dose checklist grouped by time of day
+  MedList.js               # Pill cards with supply bars and refill actions
+  MedFormModal.js          # Add/edit bottom sheet form
+```

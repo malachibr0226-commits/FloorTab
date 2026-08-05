@@ -1,8 +1,10 @@
+import AsyncStorage from '@react-native-async-storage/async-storage'
+
 const STORAGE_KEY = 'pillpal-state-v1'
 
-export function loadState() {
+export async function loadState() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = await AsyncStorage.getItem(STORAGE_KEY)
     if (!raw) return null
     const parsed = JSON.parse(raw)
     if (!parsed || !Array.isArray(parsed.meds) || typeof parsed.log !== 'object') {
@@ -14,10 +16,10 @@ export function loadState() {
   }
 }
 
-export function saveState(state) {
+export async function saveState(state) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   } catch {
-    // Storage full or unavailable — the app keeps working in memory.
+    // Storage unavailable — the app keeps working in memory.
   }
 }
